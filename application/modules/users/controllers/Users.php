@@ -21,7 +21,7 @@ class Users extends Admin_Controller
 			$config = array();
 	        $config["base_url"] = base_url() . "admin/users";
 	        $config["total_rows"] = $this->m_user->record_count($col, $val);
-	        $config["per_page"] = 1;
+	        $config["per_page"] = 7;
 	        $config["uri_segment"] = 3;
 	        $config['cur_tag_open'] = '&nbsp;<a class="current">';
 			$config['cur_tag_close'] = '</a>';
@@ -53,7 +53,7 @@ class Users extends Admin_Controller
 				$config = array();
 		        $config["base_url"] = base_url() . "admin/users/".$col.'/'.$val;
 		        $config["total_rows"] = $this->m_user->record_count($col, $val);
-		        $config["per_page"] = 1;
+		        $config["per_page"] = 7;
 		        $config["uri_segment"] = 5;
 		        $config['cur_tag_open'] = '&nbsp;<a class="current">';
 				$config['cur_tag_close'] = '</a>';
@@ -91,7 +91,7 @@ class Users extends Admin_Controller
 	{
 		$users = $this->m_user->fetch_data($limit, $page, $col, $val);
 		$user = $this->ion_auth->user()->row();
-		//$zone_id = $user->zone_id;
+		$logged_zone_id = $user->zone_id;
 		if($this->ion_auth->in_group(3) || $this->ion_auth->in_group(4))
 		{
 			$users = $this->m_user->fetch_data($limit, $page, $col, $val);
@@ -136,21 +136,65 @@ class Users extends Admin_Controller
 				{
 					$action = "<td><a href='".base_url('admin/users_edit/')."{$value->id}'><i class='fa fa-edit'></i></a></td><td><a href='#' onclick='deleteConfirm(\"".base_url()."admin/users_delete/{$value->id}\");'><i class='fa fa-trash'></i></a></td>";
 				}
-				elseif($this->ion_auth->in_group(2) || $this->ion_auth->in_group(3))
+				elseif($this->ion_auth->in_group(2)){
+
+					if($group_name == 'SuperAdmin'){
+
+						continue;
+					}
+					elseif($group_name == 'CentralAdmin'){
+
+						$action="<td colspan='2'></td>";
+					}
+					else{
+
+						$action = "<td colspan='2'><a href='".base_url('admin/users_edit/')."{$value->id}'><i class='fa fa-edit'></i></a></td>";
+					}
+
+				}
+				elseif($this->ion_auth->in_group(3) || $this->ion_auth->in_group(4))
 				{
 					if($group_name == 'SuperAdmin' || $group_name == 'CentralAdmin'){
 
 						$action="<td colspan='2'></td>";
-					}
-					elseif($this->ion_auth->in_group(3) && $group_name == 'ZoneAdmin'){
 
-						$action="<td colspan='2'></td>";
+						continue;
+					}
+					elseif($this->ion_auth->in_group(3)){
+
+						if($group_name == 'ZoneAdmin'){
+
+							$action="<td colspan='2'></td>";
+						}
+						if($logged_zone_id != $zone_id){
+
+							continue;
+						}else{
+
+							$action = "<td colspan='2'><a href='".base_url('admin/users_edit/')."{$value->id}'><i class='fa fa-edit'></i></a></td>";
+						}
 
 					}
+					elseif($this->ion_auth->in_group(4)){
+
+					if($group_name == 'BasicAdmin'){
+
+							$action="<td colspan='2'></td>";
+						}
+						if($logged_zone_id != $zone_id){
+
+							continue;
+						}
+						else{
+
+							$action = "<td colspan='2'></td>";
+						}
+					}	
+					
 					else{
 					$action = "<td colspan='2'><a href='".base_url('admin/users_edit/')."{$value->id}'><i class='fa fa-edit'></i></a></td>";
 					}
-				}	
+				}
 				else
 				{
 					$action = "<td colspan='2'></td>";
@@ -203,21 +247,20 @@ class Users extends Admin_Controller
 	function save($id = NULL)
 	{
 
-		$this->form_validation->set_rules('user_name', 'user', 'required');
-		$this->form_validation->set_rules('location', 'Location', 'required');
-		$this->form_validation->set_rules('oca', 'Operation/Coverage Area', 'required');
-		$this->form_validation->set_rules('agm', 'AGM', 'required');
-		$this->form_validation->set_rules('rank', 'Rank', 'required');
-		$this->form_validation->set_rules('tel', 'Telephone NO', 'required');
+		$this->form_validation->set_rules('first_name', 'First Name', 'required');
+		$this->form_validation->set_rules('last_name', 'Last Name', 'required');
+		$this->form_validation->set_rules('email', 'Email', 'required');
+		$this->form_validation->set_rules('telephone', 'Telephone', 'required');
+		$this->form_validation->set_rules('password', 'password', 'required');
+		//$this->form_validation->set_rules('zone', 'Zone', 'required');
+		//$this->form_validation->set_rules('tel', 'Telephone NO', 'required');
 
-
-		$user_name = $this->input->post('user_name');
-		$user_name = str_replace(' ', '', $user_name);
-	    $user_location = $this->input->post('location');
-	    $user_oca = $this->input->post('oca');
-	    $user_agm = $this->input->post('agm');
-	    $user_rank = $this->input->post('rank');
-	    $user_telephone = $this->input->post('tel');
+		$first_name = $this->input->post('first_name');
+		$last_name = $this->input->post('last_name');
+	    $email = $this->input->post('email');
+	    $telephone = $this->input->post('telephone');
+	    $password = $this->input->post('password');
+	    $zone_id = $this->input->post('zone');
 
 		$this->form_validation->set_error_delimiters('<span class="error">', '</span>');
 		if ($this->form_validation->run() == FALSE)
@@ -236,7 +279,7 @@ class Users extends Admin_Controller
 			
 			
 		}
-		elseif($this->m_user->check($user_name, $id) > 0)
+		elseif($this->m_user->check($email) > 0)
 		{
 			$this->session->set_flashdata('msg', '<div class="bg-danger text-center">user Name already exists.</div>');
 
@@ -250,16 +293,18 @@ class Users extends Admin_Controller
 			}
 		}
 		else
-		{
+		{ 
 			$data = array(
-	                'user' => $user_name,
-	                'location' => $this->input->post('location'),
-	                'operation_coverage_area' => $this->input->post('oca'),
-	                'agm_designate' => $this->input->post('agm'),
-	                'rank' => $this->input->post('rank'),
-	                'phone_no' => $this->input->post('tel'),
+	                'first_name' => $first_name,
+	                'last_name' => $last_name,
+	                'zone_id' => $zone_id,
+	                'phone' => $telephone,
 	                
             	);
+			 $email    = strtolower($this->input->post('email'));
+            $identity = $email;
+            $password = $this->input->post('password');
+
 
 			if($id != NULL){
 
@@ -274,9 +319,9 @@ class Users extends Admin_Controller
 			else{
 
 				//insert
-				$data['date_created'] = date('Y-m-d H:i:s');
+				//$data['date_created'] = date('Y-m-d H:i:s');
 
-				if ($this->m_user->post($data))
+				if ($this->ion_auth->register($identity, $password, $email, $data))
 				{
 					$this->session->set_flashdata('msg', '<div class="bg-success text-center">Successfully Added. </div>');
 		            redirect(base_url().'admin/users_create', 'refresh');

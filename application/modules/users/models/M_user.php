@@ -35,12 +35,32 @@ class M_User extends CI_Model
 		return $query->row();
 	}
 
+	public function get_zone_like($col, $val)
+	{
+		$this->db->from('zones');
+		$this->db->like($col, $val);
+		$query = $this->db->get();
+
+		return $query->row();
+	}
+
 
 	public function record_count($col, $val) {
 
 			if($col != "" || $val != ""){
-		       		
-				$this->db->like($col, $val);
+			
+				if($col == "zone"){
+
+					$zone = $this->get_zone_like($col, $val);
+					$zone_id = $zone->zone_id;
+			       		
+					$this->db->like('zone_id', $zone_id);
+				}
+				else{
+
+					$this->db->like($col, $val);
+				}
+		
 			}
 
 	        $query = $this->db->get("users");
@@ -50,14 +70,30 @@ class M_User extends CI_Model
 
 	public function fetch_data($limit, $start, $col, $val) {
 
-		
 		if($col != "" || $val != ""){
+			
+				if($col == "zone"){
+
+					$zone = $this->get_zone_like($col, $val);
+					$zone_id = $zone->zone_id;
+			       		
+					$this->db->like('zone_id', $zone_id);
+				}
+				else{
+
+					$this->db->like($col, $val);
+				}
+		
+			}
+
+		
+		/*if($col != "" || $val != ""){
 	       		
 				$this->db->like($col, $val);
-		}
+		}*/
+
 		$this->db->limit($limit, $start);
         $query = $this->db->get('users');
-
         if ($query->num_rows() > 0) {
             foreach ($query->result() as $row) {
                 $data[] = $row;
@@ -137,9 +173,8 @@ class M_User extends CI_Model
 
 
 
-	public function check($user, $id) {
-			$this->db->where('id !=', $id);
-			$this->db->where('user', $user);
+	public function check($email) {
+			$this->db->where('email', $email);
 	        $query = $this->db->get("users");
 			return count($query->result());
 

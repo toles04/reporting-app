@@ -9,29 +9,25 @@
                 
                 <?php
 
-                    $user_name = "";
-                    $location = "";
-                    $oca = "";
-                    $agm = "";
-                    $rank = "";
+                    $first_name = "";
+                    $last_name = "";
+                    $email = "";
                     $telephone = "";
+                    $password = "";
+                    $confirm_password = "";
+                    $zone = "";
 
                     if($users){
 
                         foreach($users as $user){
 
-                            $user_name = $user['user'];
-                            $location = $user['location'];
-                            $oca = $user['operation_coverage_area'];
-                            $agm = $user['agm_designate'];
-                            $rank = $user['rank'];
-                            $telephone = $user['phone_no'];
-
+                            $first_name = $user['first_name'];
+                            $first_name = $user['last_name'];
+                            $email = $user['email'];
+                            $telepnone = $user['telephone'];
+                            $zone = $user['zone_id'];
                         }
-
                     }
-
-
                 ?>
             
                 <div class="row">
@@ -46,24 +42,39 @@
                                     <?php echo form_open($action);?>
 
                                       <div class="form-group">
-                                        <label for="user_name">First Name:</label>
-                                        <input type="text" class="form-control" id="user_name" name="user_name" value="<?php echo $user_name; ?>">
-                                        <?php echo form_error('user_name');?>
+                                        <label for="first_name">First Name:</label>
+                                        <input type="text" class="form-control" id="first_name" name="first_name" value="<?php echo $first_name; ?>">
+                                        
                                       </div>
                                       <div class="form-group">
-                                        <label for="user_name">Last Name:</label>
-                                        <input type="text" class="form-control" id="user_name" name="user_name" value="<?php echo $user_name; ?>">
-                                        <?php echo form_error('user_name');?>
+                                        <label for="last_name">Last Name:</label>
+                                        <input type="text" class="form-control" id="last_name" name="last_name" value="<?php echo $last_name; ?>">
+                                        
                                       </div>
                                       <div class="form-group">
                                         <label for="location">Email:</label>
-                                        <input type="text" class="form-control" id="location" name="location" value="<?php echo $location; ?>">
-                                        <?php echo form_error('location');?>
+                                        <input type="email" class="form-control" id="email" name="email" value="<?php echo $email; ?>">
+                                        
                                       </div>
                                       <div class="form-group">
                                         <label for="tel">Telephone NO:</label>
-                                        <input type="tel" class="form-control" id="tel" name="tel" value="<?php echo $telephone; ?>">
-                                        <?php echo form_error('tel');?>
+                                        <input type="tel" class="form-control" id="tel" name="telephone" value="<?php echo $telephone; ?>">
+                                        
+                                      </div>
+                                       <div class="form-group">
+                                        <label for="tel">Password:</label>
+                                        <input type="text" class="form-control" id="password" name="password" value="<?php echo $telephone; ?>">
+                                        
+                                      </div>
+                                       <div class="form-group">
+                                        <label for="tel">Confirm Password:</label>
+                                        <input type="text" class="form-control" id="confifrm_password" name="confirm_password" value="<?php echo $telephone; ?>">
+                                        
+                                      </div>
+                                      <div class="form-group">
+                                        <label for="zone">Zone</label>
+                                        <input type="text" class="form-control" id="zone" name="zone" value="<?php echo $zone; ?>">
+                                        
                                       </div>
                                       
                                       <button type="submit" class="btn btn-success">Submit</button>

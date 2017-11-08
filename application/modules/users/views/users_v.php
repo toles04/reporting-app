@@ -23,21 +23,39 @@
                 <!-- ============================================================== -->
                 <div class="row">
                     <div class="col-md-12 col-lg-12 col-sm-12">
+                        
+                                
+                            
                         <div class="white-box">
-                            <h3 class="box-title">All users</h3>
-                            <form action="<?php echo base_url('admin/users'); ?>" method="post">
-                                <label for="search">Search</label>
-                                <input type="text" name="search">
-                              <label class="mr-sm-2" for="inlineFormCustomSelect">Preference</label>
-                              <select class="custom-select mb-2 mr-sm-2 mb-sm-0" id="inlineFormCustomSelect" name='filter' >
-                                <option value="" selected>All</option>
-                                <option value="email">Email</option>
-                                <option value="first_name">First Name</option>
-                                <option value="last_name">Last Name</option>
-                              </select>
-                              <button type="submit">GO</button>
-                            </form>
-                            <?php echo $this->session->flashdata('msgdelete'); ?>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h3 class="box-title">All users</h3>
+                                    <form action="<?php echo base_url('admin/users'); ?>" method="post" >
+                                        
+                                        <span class="">
+                                            <label  for="inlineFormCustomSelect">By &nbsp;</label>
+                                              <select id="inlineFormCustomSelect" name='filter' >  
+                                                <option value="first_name" selected>First Name</option>
+                                                <option value="last_name">Last Name</option>
+                                                <option value="email">Email</option>
+                                                <option value="zone">Zone</option>
+                                              </select>
+                                        </span>
+
+                                        <span class="pull-right">
+                                            <label for="search">Search
+                                                <input type="text" name="search" >
+                                            </label>
+                                            <button type="submit" class="btn btn-success btn-sm">GO</button>
+                                        </span>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12"><?php echo $this->session->flashdata('msgdelete'); ?></div>
+                            </div>
+
                             <div class="table-responsive">
                                 <table class="table-bordered table-striped table-condensed table-hover">
                                     <thead>
@@ -47,10 +65,10 @@
                                             <th colspan="2">Full Name</th>
                                             <th>Email Address</th>
                                             <th>Telephone NO</th>
-                                            <th>Zone</th>
+                                            <th>Zone Group</th>
                                             <th>Area</th>
-                                            <th>Status</th>
-                                            <th>Admin Level</th>
+                                            <th>Activation Status</th>
+                                            <th>Roles/Permissions </th>
                                             
                                             <th colspan="2"></th>
                                         </tr>
@@ -64,7 +82,7 @@
                                                 {
                                                  ?>
                                                 <tr>
-                                                    <td colspan="7"><center>No user(s) to display</center></td>
+                                                    <td colspan="10"><center>No user(s) to display</center></td>
                                                 </tr>
                                          <?php } ?>
                                     </tbody>
